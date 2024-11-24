@@ -69,12 +69,11 @@ void listar() {
 
   noPtr aux = topo;
   int i = 0;
-  while (aux->prox) {
-    printf("%do elemento:\n  Valor: %d\n  Endereco: %lu\n  Endereco do prox: %lu\n", i+1, aux->valor, aux, aux->prox);
+  do {
+    printf("%do elemento:\n  Valor: %d\n  Endereco: %p\n  Endereco do prox: %p\n", i+1, aux->valor, aux, aux->prox);
     aux = aux->prox;
     i++;
-  }
-  printf("%do elemento:\n  Valor: %d\n  Endereco: %lu\n  Endereco do prox: <NULL>\n", i+1, aux, aux->valor);
+  } while (aux);
 
   saida();
 }
