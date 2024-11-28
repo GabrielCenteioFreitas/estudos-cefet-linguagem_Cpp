@@ -24,11 +24,7 @@ void saida() {
 }
 
 bool listaVazia() {
-  if (!topo) {
-    return true;
-  }
-
-  return false;
+  return !topo;
 }
 
 void enqueue(int valor) {
@@ -82,7 +78,7 @@ int menu() {
   int escolha;
 
   system(CLEAR);
-  cout << "[1] Enqueue\n[2] Dequeue\n[3] Listar\nQual acao deseja realizar na pilha? ";
+  cout << "[1] Enqueue\n[2] Dequeue\n[3] Listar\nQual acao deseja realizar na fila? ";
   cin >> escolha;
 
   return escolha;

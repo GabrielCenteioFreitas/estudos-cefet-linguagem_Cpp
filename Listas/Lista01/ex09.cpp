@@ -8,13 +8,13 @@ using namespace std;
     #define CLEAR "clear"
 #endif
 
-struct no {
-  int valor;
-  struct no *prox;
+struct ctrlZ {
+  int acao;
+  struct ctrlZ *prox;
 };
-typedef struct no* noPtr;
+typedef struct ctrlZ* ctrlZPtr;
 
-noPtr topo = NULL;
+ctrlZPtr topo = NULL;
 
 void saida() {
   char caractere;
@@ -26,43 +26,42 @@ bool listaVazia() {
   return !topo;
 }
 
-void push(int valor) {
-  noPtr novoNo;
-  novoNo = (noPtr) malloc (sizeof (struct no));
-  novoNo->valor = valor;
+void insert(int acao) {
+  ctrlZPtr novoNo;
+  novoNo = new ctrlZ;
+  novoNo->acao = acao;
   novoNo->prox = topo;
   topo = novoNo;
-  printf("Elemento de valor %d foi adicionado ao topo da pilha!\n", valor);
+  printf("Acao de numero %d foi adicionada ao historico!\n", acao);
   saida();
 }
 
-void pop() {
+void remove() {
   if (listaVazia()) {
-    printf("A lista esta vazia\n");
+    printf("O historico esta vazio.\n");
     saida();
     return;
   }
 
-  printf("Elemento de valor %d removido!\n", topo->valor);
+  printf("Acao de numero %d removida!\n", topo->acao);
   topo = topo->prox;
   saida();
 }
 
 void listar() {
   if (listaVazia()) {
-    printf("A lista esta vazia\n");
+    printf("O historico esta vazio\n");
     saida();
     return;
   }
 
-  noPtr aux = topo;
+  ctrlZPtr aux = topo;
   int i = 0;
-  while (aux->prox) {
-    printf("%do elemento:\n  Valor: %d\n  Endereco do prox: %lu\n", i+1, aux->valor, aux->prox);
+  do {
+    printf("%do elemento:\n  Valor: %d\n  Endereco: %p\n  Endereco do prox: %p\n", i+1, aux->acao, aux, aux->prox);
     aux = aux->prox;
     i++;
-  }
-  printf("%do elemento:\n  Valor: %d\n  Endereco do prox: <NULL>\n", i+1, aux->valor);
+  } while (aux);
 
   saida();
 }
@@ -71,7 +70,10 @@ int menu() {
   int escolha;
 
   system(CLEAR);
-  cout << "[1] Empilhar\n[2] Desempilhar\n[3] Listar\nQual acao deseja realizar na pilha? ";
+  printf("[1] Inserir acao\n");
+  printf("[2] Retirar acao\n");
+  printf("[3] Listar acoes\n");
+  printf("O que deseja realizar no historico? ");
   cin >> escolha;
 
   return escolha;
@@ -86,13 +88,13 @@ int main() {
       case 1:
         int valor;
 
-        cout << "Qual valor do elemento a ser adicionado? ";
+        cout << "Qual numero da acao realizada? ";
         cin >> valor;
 
-        push(valor);
+        insert(valor);
         break;
       case 2:
-        pop();
+        remove();
         break;
       case 3:
         listar();

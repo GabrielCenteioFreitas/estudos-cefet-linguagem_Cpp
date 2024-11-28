@@ -57,12 +57,31 @@ void listar() {
 
   noPtr aux = topo;
   int i = 0;
-  while (aux->prox) {
-    printf("%do elemento:\n  Valor: %d\n  Endereco do prox: %lu\n", i+1, aux->valor, aux->prox);
+  do {
+    printf("%do elemento:\n  Valor: %d\n  Endereco: %p\n  Endereco do prox: %p\n", i+1, aux->valor, aux, aux->prox);
     aux = aux->prox;
     i++;
+  } while (aux);
+
+  saida();
+}
+
+void contar(int valor) {
+  if (listaVazia()) {
+    printf("A lista nao tem nenhum elemento.\n");
+    saida();
+    return;
   }
-  printf("%do elemento:\n  Valor: %d\n  Endereco do prox: <NULL>\n", i+1, aux->valor);
+
+  int i = 0;
+  for (noPtr aux = topo; aux; aux = aux->prox) {
+    if (aux->valor > valor) i++;
+  }
+  if (i) {
+    printf("A lista tem %d elemento%s maior%s que %d.\n", i, i == 1 ? "" : "s",  i == 1 ? "" : "es", valor);
+  } else {
+    printf("A lista nao tem nenhum elemento maior que %d.\n", valor);
+  }
 
   saida();
 }
@@ -71,21 +90,23 @@ int menu() {
   int escolha;
 
   system(CLEAR);
-  cout << "[1] Empilhar\n[2] Desempilhar\n[3] Listar\nQual acao deseja realizar na pilha? ";
+  printf("[1] Empilhar\n");
+  printf("[2] Desempilhar\n");
+  printf("[3] Listar\n");
+  printf("[4] Contar\n");
+  printf("Qual acao deseja realizar na pilha? ");
   cin >> escolha;
 
   return escolha;
 }
 
 int main() {
-  int escolha = menu();
+  int escolha = menu(), valor;
 
-  while (escolha >= 1 && escolha <= 3) {
+  while (escolha >= 1 && escolha <= 4) {
     system(CLEAR);
     switch(escolha) {
       case 1:
-        int valor;
-
         cout << "Qual valor do elemento a ser adicionado? ";
         cin >> valor;
 
@@ -96,6 +117,12 @@ int main() {
         break;
       case 3:
         listar();
+        break;
+      case 4:
+        cout << "Digite um numero: ";
+        cin >> valor;
+
+        contar(valor);
         break;
     }
     escolha = menu();
