@@ -1,3 +1,8 @@
+/*
+  Nota: Os emojis de baralho têm uma aparência mais bonita
+  quando o sistema operacional utilizado é Linux
+*/
+
 #include <iostream>
 #include <algorithm>
 #include <random>
@@ -13,7 +18,6 @@ using namespace std;
 #define TEXT_RED "\033[38;5;124m"
 #define TEXT_WHITE "\033[37m"
 #define TEXT_BLUE "\033[30m"
-//#define BG_GREEN "\033[48;5;22m"
 #define BOLD "\033[1m"
 #define RESET "\033[0m"
 
@@ -132,6 +136,8 @@ void printTableau() {
     }
   }
   printf("\n\n");
+
+  printf("%s 1  2  3  4  5  6  7  8\n%s", BOLD, RESET);
 
   bool allNull = false;
   int i = 0;
@@ -256,8 +262,7 @@ void askUser() {
   char escolha1, escolha2;
   printf("1-8 para as pilhas (1-8)\n");
   printf("A-D para as free cells (A-D)\n");
-  printf("Formato: origem destino (ex: 'A 1')\n");
-  printf("Exemplo: 'A 1' para mover de A para a coluna 1.\n");
+  printf("Formato: 'Origem Destino' (ex: '3 5' para mover da coluna 3 para a 5)\n");
   printf("Escolha uma carta para mover: ");
   cin >> escolha1 >> escolha2;
 
