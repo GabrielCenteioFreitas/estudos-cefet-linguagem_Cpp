@@ -1,13 +1,16 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
-#include <unistd.h>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
 #ifdef _WIN32
   #define CLEAR "cls"
+  #include <Windows.h>
 #else
+  #include <unistd.h>
   #define CLEAR "clear"
 #endif
 
@@ -32,6 +35,14 @@ struct node {
   struct node *next;
 };
 typedef struct node* nodePtr;
+
+void customSleep(int timeInMicroSeconds) {
+  #ifdef _WIN32
+    Sleep(timeInMicroSeconds / 1000);
+  #else
+    usleep(timeInMicroSeconds);
+  #endif
+}
 
 bool isWheelEmpty(nodePtr finalPtr) {
   return !finalPtr;
@@ -190,22 +201,22 @@ void spinWheel(Pocket wheel[], int spinsQnt, int chosenNumber) {
     wheel[0] = lastPocket;
 
     if (i < 0.40*spinsQnt) { // 0%-40%
-      usleep(125000);
+      customSleep(125000);
     } else if (i < 0.60*spinsQnt) { // 40%-60%
-      usleep(175000);
+      customSleep(175000);
     } else if (i < 0.65*spinsQnt) { // 60%-65%
-      usleep(225000);
+      customSleep(225000);
     } else if (i < 0.80*spinsQnt) { // 65%-80%
-      usleep(275000);
+      customSleep(275000);
     } else if (i < 0.90*spinsQnt) { // 80%-90%
-      usleep(375000);
+      customSleep(375000);
     } else if (i < 0.95*spinsQnt) { // 90%-95%
-      usleep(550000);
+      customSleep(550000);
     } else { // 95%-100%
-      usleep(800000);
+      customSleep(800000);
     }
   }
-  usleep(500000);
+  customSleep(500000);
 }
 
 int askUser() {
@@ -248,7 +259,7 @@ void start(nodePtr finalPocketPtr) {
   printf(EMPTY_LINE);
   printf(DEFAULT);printf(BOLD);
   if (winningPocket.number == chosenNumber) {
-    printf("            PARABENS! 🎉 Você venceu!            \n");
+    printf("            PARABÉNS! 🎉 Você venceu!            \n");
   } else {
     printf("       Não foi dessa vez! O resultado foi:       \n");
   }
@@ -264,7 +275,7 @@ void start(nodePtr finalPocketPtr) {
 }
 
 int main() {
-  srand(time(nullptr));
+  srand(time(NULL));
 
   nodePtr finalPocket = NULL;
   int pocketsQnt = 0;
