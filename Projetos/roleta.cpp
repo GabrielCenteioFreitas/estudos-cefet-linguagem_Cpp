@@ -33,6 +33,7 @@ typedef struct {
 struct node {
   Pocket pocket;
   struct node *next;
+  struct node *prev;
 };
 typedef struct node* nodePtr;
 
@@ -54,9 +55,12 @@ void insertPocket(nodePtr* finalPtr, int* qntPtr, Pocket pocket) {
 
   if (!isWheelEmpty(*finalPtr)) {
     newNode->next = (*finalPtr)->next;
+    newNode->prev = (*finalPtr);
+    (*finalPtr)->next->prev = newNode;
     (*finalPtr)->next = newNode;
   } else {
     newNode->next = newNode;
+    newNode->prev = newNode;
   }
 
   *finalPtr = newNode;
@@ -137,8 +141,16 @@ void printLine5(Pocket wheel[], int positions[2]) {
   printf(DEFAULT);printf("  \n");printf(RESET);
 }
 
-void printWheel(Pocket wheel[]) {
+void printWheel(nodePtr finalPocketPtr) {
   system(CLEAR);
+
+  Pocket wheel[QNT];
+  nodePtr aux = finalPocketPtr->next;
+  for (int i = 0; i < QNT; i++) {
+    wheel[i] = aux->pocket;
+    aux = aux->next;
+  }
+
   int* positions[15];
   initializePositions(positions);
 
@@ -185,20 +197,16 @@ void initializeWheel(nodePtr* finalPocketPtr, int* pocketsQnt ) {
   }
 }
 
-void spinWheel(Pocket wheel[], int spinsQnt, int chosenNumber) {
+void spinWheel(nodePtr* finalPocketPtr, int spinsQnt, int chosenNumber) {
   for (int i = 0; i < spinsQnt; i++) {
-    printWheel(wheel);
+    printWheel(*finalPocketPtr);
     printf(EMPTY_LINE);
     printf(DEFAULT);printf(BOLD);printf("                Número  escolhido:               \n");printf(RESET);
     printf(DEFAULT);printf("               %s         %2d         %s              \n", BLACK, chosenNumber, DEFAULT);printf(RESET);
     printf(EMPTY_LINE);
     printf(EMPTY_LINE);
 
-    Pocket lastPocket = wheel[QNT-1];
-    for (int i = QNT-1; i > 0; i--) {
-      wheel[i] = wheel[i-1];
-    }
-    wheel[0] = lastPocket;
+    *finalPocketPtr = (*finalPocketPtr)->prev;
 
     if (i < 0.40*spinsQnt) { // 0%-40%
       customSleep(125000);
@@ -233,29 +241,22 @@ int askUser() {
   return chosenNumber;
 }
 
-void start(nodePtr finalPocketPtr) {
-  Pocket wheel[QNT];
-  nodePtr aux = finalPocketPtr->next;
-  for (int i = 0; i < QNT; i++) {
-    wheel[i] = aux->pocket;
-    aux = aux->next;
-  }
-
+void start(nodePtr* finalPocketPtr) {
   int
     minSpins = 35,
     maxSpins = 120,
     spinsQnt = (rand() % (maxSpins - minSpins)) + minSpins;
   
-  printWheel(wheel);
+  printWheel(*finalPocketPtr);
 
   int chosenNumber = askUser();
   if (chosenNumber < 0 || chosenNumber > 39) return;
 
-  spinWheel(wheel, spinsQnt, chosenNumber);
+  spinWheel(finalPocketPtr, spinsQnt, chosenNumber);
 
-  Pocket winningPocket = wheel[0];
+  Pocket winningPocket = (*finalPocketPtr)->next->pocket;
 
-  printWheel(wheel);
+  printWheel(*finalPocketPtr);
   printf(EMPTY_LINE);
   printf(DEFAULT);printf(BOLD);
   if (winningPocket.number == chosenNumber) {
@@ -281,5 +282,5 @@ int main() {
   int pocketsQnt = 0;
   
   initializeWheel(&finalPocket, &pocketsQnt);
-  start(finalPocket);
+  start(&finalPocket);
 }
