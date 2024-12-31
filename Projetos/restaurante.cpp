@@ -183,9 +183,10 @@ int menu() {
 
   system(CLEAR);
   printTitle();
-  cout << "[1] Chegada de cliente\n"
-       << "[2] Consumo de cliente\n"
-       << "[3] Saida de cliente\n"
+  cout << "[0] Sair\n"
+       << "[1] Adicionar cliente\n"
+       << "[2] Realizar pedido\n"
+       << "[3] Liberar cliente\n"
        << "[4] Listar clientes\n\n"
        << "Qual acao deseja realizar? ";
   cin >> escolha;
@@ -197,7 +198,7 @@ int main() {
   noCliPtr topo = NULL, fim = NULL;
   int escolha = menu(), codCliente, codProduto;
 
-  while (escolha >= 1 && escolha <= 4) {
+  while (escolha) {
     system(CLEAR);
     printTitle();
     switch(escolha) {
@@ -205,9 +206,9 @@ int main() {
         chegadaCliente(&topo, &fim);
         break;
       case 2:
-        cout << "Qual o codigo do cliente que realizou o consumo? ";
+        cout << "Qual o codigo do cliente que realizou o pedido? ";
         cin >> codCliente;
-        cout << "Qual o codigo do produto consumido? ";
+        cout << "Qual o codigo do produto solicitado? ";
         cin >> codProduto;
         consumoCliente(&topo, &fim, codCliente, codProduto);
         break;
