@@ -67,9 +67,9 @@ void excluir(noPtr* topoEnd, noPtr* fimEnd, int numLinha) {
     return;
   }
 
-  if (numLinha < 0) {
+  if (numLinha <= 0) {
     printf(RED);
-    printf("\nInsira um valor maior ou igual a 0.\n");
+    printf("\nInsira um valor maior que 0.\n");
     saida();
     return;
   }
@@ -127,7 +127,14 @@ void mover(noPtr* topoEnd, noPtr* fimEnd, int numLinha1, int numLinha2) {
 
   if (numLinha1 < 0 || numLinha2 < 0) {
     printf(RED);
-    printf("\nInsira valores maiores ou iguais a 0.\n");
+    printf("\nInsira valores maiores que 0.\n");
+    saida();
+    return;
+  }
+
+  if (numLinha1 == numLinha2) {
+    printf(RED);
+    printf("\nInsira valores diferentes.\n");
     saida();
     return;
   }
@@ -136,33 +143,47 @@ void mover(noPtr* topoEnd, noPtr* fimEnd, int numLinha1, int numLinha2) {
   for (i = 0; i < numLinha1 && aux1; i++) {
     aux1 = aux1->prox;
   }
-  for (i = 0; i < numLinha2 && aux2; i++) {
-    aux2 = aux2->prox;
-  }
   
-  if (!aux1 && !aux2) {
+  if (!aux1) {
     printf(RED);
     printf("\nO texto possui apenas %d linha(s).\n", i);
     saida();
     return;
   }
+
+  for (int j = 0; j < numLinha2 && aux2; j++) {
+    aux2 = aux2->prox;
+  }
   
-  if (!aux1 || !aux2) {
-    novoNo->conteudo = aux1 ? aux1->conteudo : aux2->conteudo;
+  novoNo->conteudo = aux1->conteudo;
+  if (!aux2 || aux2 == *fimEnd) {
     novoNo->ant = *fimEnd;
     novoNo->prox = NULL;
     (*fimEnd)->prox = novoNo;
     *fimEnd = novoNo;
-
-    temp = *topoEnd;
-    if (temp->ant) temp->ant->prox = temp->prox;
-    if (temp->prox) temp->prox->ant = temp->ant;
-    if (temp == *fimEnd) *fimEnd = temp->ant;
-    *topoEnd = temp->prox;
-    delete temp;
+  } else if (aux2 == *topoEnd) {
+    novoNo->ant = NULL;
+    novoNo->prox = *topoEnd;
+    (*topoEnd)->ant = novoNo;
+    *topoEnd = novoNo;
+  } else if (numLinha1 < numLinha2) {
+    novoNo->ant = aux2;
+    novoNo->prox = aux2->prox;
+    if (aux2->prox) aux2->prox->ant = novoNo;
+    aux2->prox = novoNo;
   } else {
-    swap(aux1->conteudo, aux2->conteudo);
+    novoNo->ant = aux2->ant;
+    novoNo->prox = aux2;
+    if (aux2->ant) aux2->ant->prox = novoNo;
+    aux2->ant = novoNo;
   }
+
+  temp = aux1;
+  if (temp->ant) temp->ant->prox = temp->prox;
+  if (temp->prox) temp->prox->ant = temp->ant;
+  if (temp == *fimEnd) *fimEnd = (*topoEnd)->ant;
+  if (temp == *topoEnd) *topoEnd = (*topoEnd)->prox;
+  delete temp;
 
   printf(GREEN);
   printf("\nLinhas movidas com sucesso!\n");
@@ -204,7 +225,7 @@ int main() {
       case 2:
         cout << "Qual o numero da linha a ser excluida? ";
         cin >> numLinha1;
-        excluir(&topo, &fim, numLinha1);
+        excluir(&topo, &fim, numLinha1-1);
         break;
       case 3:
         listar(topo, false);
@@ -217,7 +238,7 @@ int main() {
         cin >> numLinha1;
         cout << "Qual o numero da linha onde o trecho sera colocado? ";
         cin >> numLinha2;
-        mover(&topo, &fim, numLinha1, numLinha2);
+        mover(&topo, &fim, numLinha1-1, numLinha2-1);
         break;
     }
     escolha = menu();
