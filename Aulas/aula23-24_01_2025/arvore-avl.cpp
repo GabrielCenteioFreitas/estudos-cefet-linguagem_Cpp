@@ -159,6 +159,17 @@ void balancear(noPtr* endRaiz, noPtr p) {
 
   balancear(endRaiz, p->esq);
   balancear(endRaiz, p->dir);
+  
+  p->altEsq = p->esq
+    ? p->esq->altEsq > p->esq->altDir
+        ? p->esq->altEsq + 1
+        : p->esq->altDir + 1
+    : 0;
+  p->altDir = p->dir
+    ? p->dir->altEsq > p->dir->altDir
+        ? p->dir->altEsq + 1
+        : p->dir->altDir + 1
+    : 0;
 
   fb = p->altEsq - p->altDir;
 
