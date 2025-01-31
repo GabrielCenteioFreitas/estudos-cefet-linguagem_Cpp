@@ -296,24 +296,18 @@ void menor(noPtr raiz) {
   saida();
 }
 
-int contarNosDeGrauUm(noPtr p) {
-  int qnt = 0;
-
-  if (enderecoVazio(p)) {
-    return 0;
-  }
+void contarNosDeGrauUm(noPtr p, int *qnt) {
+  if (enderecoVazio(p)) return;
 
   if (
     (enderecoVazio(p->esq) && !enderecoVazio(p->dir)) ||
     (!enderecoVazio(p->esq) && enderecoVazio(p->dir))
   ) {
-    qnt++;
+    (*qnt)++;
   }
 
-  qnt += contarNosDeGrauUm(p->esq);
-  qnt += contarNosDeGrauUm(p->dir);
-
-  return qnt;
+  contarNosDeGrauUm(p->esq, qnt);
+  contarNosDeGrauUm(p->dir, qnt);
 }
 
 void nosDeGrauUm(noPtr raiz) {
@@ -324,9 +318,33 @@ void nosDeGrauUm(noPtr raiz) {
     return;
   }
 
-  int qntNosGrauUm = contarNosDeGrauUm(raiz);
+  int qntNosGrauUm = 0;
+  contarNosDeGrauUm(raiz, &qntNosGrauUm);
 
   printf("A árvore tem %d nó(s) de grau 1!\n", qntNosGrauUm);
+  saida();
+}
+
+void contarNos(noPtr p, int *qnt) {
+  if (enderecoVazio(p)) return;
+
+  (*qnt)++;
+  contarNos(p->dir, qnt);
+  contarNos(p->esq, qnt);
+}
+
+void nos(noPtr raiz) {
+  if (enderecoVazio(raiz)) {
+    printf(RED);
+    printf("A árvore não possui nós.\n");
+    saida();
+    return;
+  }
+
+  int qntNos = 0;
+  contarNos(raiz, &qntNos);
+
+  printf("A árvore tem %d nó(s)!\n", qntNos);
   saida();
 }
 
@@ -342,7 +360,8 @@ int menu() {
        << "[5] Ver somatório\n"
        << "[6] Ver nó de maior valor\n"
        << "[7] Ver nó de menor valor\n"
-       << "[8] Ver quantidade de nós com grau 1\n"
+       << "[8] Ver quantidade de nós\n"
+       << "[9] Ver quantidade de nós com grau 1\n"
        << "\nQual acao deseja realizar? ";
   cin >> escolha;
 
@@ -353,7 +372,7 @@ int main() {
   noPtr raiz = NULL;
   int escolha = menu(), valor;
 
-  while (escolha >= 1 && escolha <= 8) {
+  while (escolha) {
     system(CLEAR);
     printarTitulo();
     switch(escolha) {
@@ -388,6 +407,9 @@ int main() {
         menor(raiz);
         break;
       case 8:
+        nos(raiz);
+        break;
+      case 9:
         nosDeGrauUm(raiz);
         break;
     }
