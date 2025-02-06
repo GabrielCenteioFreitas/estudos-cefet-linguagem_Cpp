@@ -223,15 +223,9 @@ void buscar(noPtr raiz, int valor) {
 }
 
 int somarNos(noPtr p) {
-  int soma = 0;
+  if (!p) return 0;
 
-  if (enderecoVazio(p)) return 0;
-
-  soma += p->info;
-  soma += somarNos(p->esq);
-  soma += somarNos(p->dir);
-
-  return soma;
+  return p->info + somarNos(p->esq) + somarNos(p->dir);
 }
 
 void somar(noPtr raiz) {
@@ -249,11 +243,7 @@ void somar(noPtr raiz) {
 }
 
 noPtr maiorNo(noPtr p) {
-  if (enderecoVazio(p->dir)) {
-    return p;
-  }
-
-  return maiorNo(p->dir);
+  return !(p->dir) ? p : maiorNo(p->dir);
 }
 
 void maior(noPtr raiz) {
@@ -273,11 +263,7 @@ void maior(noPtr raiz) {
 }
 
 noPtr menorNo(noPtr p) {
-  if (enderecoVazio(p->esq)) {
-    return p;
-  }
-
-  return menorNo(p->esq);
+  return !(p->esq) ? p : menorNo(p->esq);
 }
 
 void menor(noPtr raiz) {
@@ -296,18 +282,17 @@ void menor(noPtr raiz) {
   saida();
 }
 
-void contarNosDeGrauUm(noPtr p, int *qnt) {
-  if (enderecoVazio(p)) return;
+int contarNosDeGrauUm(noPtr p) {
+  if (!p) return 0;
 
   if (
-    (enderecoVazio(p->esq) && !enderecoVazio(p->dir)) ||
-    (!enderecoVazio(p->esq) && enderecoVazio(p->dir))
+    (!p->esq && p->dir) ||
+    (!p->dir && p->esq)
   ) {
-    (*qnt)++;
+    return 1 + contarNosDeGrauUm(p->esq) + contarNosDeGrauUm(p->dir);
   }
 
-  contarNosDeGrauUm(p->esq, qnt);
-  contarNosDeGrauUm(p->dir, qnt);
+  return contarNosDeGrauUm(p->esq) + contarNosDeGrauUm(p->dir);
 }
 
 void nosDeGrauUm(noPtr raiz) {
@@ -318,8 +303,7 @@ void nosDeGrauUm(noPtr raiz) {
     return;
   }
 
-  int qntNosGrauUm = 0;
-  contarNosDeGrauUm(raiz, &qntNosGrauUm);
+  int qntNosGrauUm = contarNosDeGrauUm(raiz);
 
   printf("A árvore tem %d nó(s) de grau 1!\n", qntNosGrauUm);
   saida();

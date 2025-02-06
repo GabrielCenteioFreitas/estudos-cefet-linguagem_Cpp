@@ -49,11 +49,18 @@ void retirar(noPtr* finalEnd, int* qtdEnd) {
     return;
   }
 
-  noPtr temp = (*finalEnd)->prox;
-  (*finalEnd)->prox = (*finalEnd)->prox->prox;
-  delete temp;
+  noPtr temp;
+  if ((*qtdEnd) == 1) {
+    temp = *finalEnd;
+    *finalEnd = NULL;
+  } else {
+    temp = (*finalEnd)->prox;
+    (*finalEnd)->prox = temp->prox;
+  }
 
+  delete temp;
   (*qtdEnd)--;
+  
   printf("Elemento removido!\n");
   saida();
 }
